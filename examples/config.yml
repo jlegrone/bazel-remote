@@ -1,0 +1,7 @@
+host:    localhost
+port:    8080 
+dir:     /Users/buchgr/.bazel-disk-cache
+max_size: 10
+gcs_proxy:
+  bucket: bazel-buildkite-cache
+  use_default_credentials: true

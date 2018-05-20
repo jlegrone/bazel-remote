@@ -1,0 +1,26 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "gcsproxy.go",
+        "httpproxy.go",
+    ],
+    importpath = "github.com/buchgr/bazel-remote/cache/proxy",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//cache:go_default_library",
+        "@org_golang_x_oauth2//:go_default_library",
+        "@org_golang_x_oauth2//google:go_default_library",
+    ],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = ["httpproxy_test.go"],
+    embed = [":go_default_library"],
+    deps = [
+        "//cache:go_default_library",
+        "//utils:go_default_library",
+    ],
+)
