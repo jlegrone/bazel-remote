@@ -9,12 +9,20 @@ type Logger interface {
 	Printf(format string, v ...interface{})
 }
 
-// ErrTooBig is returned by Cache::Put when when the item size is bigger than the
-// cache size limit.
-type ErrTooBig struct{}
+type CacheErrorCode int
 
-func (e *ErrTooBig) Error() string {
-	return "item bigger than the cache size limit"
+const (
+	BlobTooLarge      CacheErrorCode = iota
+	ResourceExhausted CacheErrorCode = iota
+)
+
+type CacheError struct {
+	Code CacheErrorCode
+	msg  string
+}
+
+func (e *CacheError) Error() string {
+	return e.msg
 }
 
 // Cache is the interface for a generic blob storage backend. Implementers should handle

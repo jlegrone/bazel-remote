@@ -129,11 +129,15 @@ func (h *httpCache) CacheHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err := h.cache.Put(cacheKey, r.ContentLength, expectedHash, r.Body)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		if err := h.cache.Put(cacheKey, r.ContentLength, expectedHash, r.Body); err != nil {}
+			if cerr, ok := err.(*cache.CacheError); ok {
+				if cerr.Code == cache.BlobTooLarge
+
+				return
+			} else {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 			h.errorLogger.Printf("PUT %s: %s", cacheKey, err)
-			return
 		}
 
 		logResponse(http.StatusOK)

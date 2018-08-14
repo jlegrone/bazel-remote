@@ -206,7 +206,7 @@ func TestCacheExistingFiles(t *testing.T) {
 	}
 }
 
-// Make sure that Cache returns ErrTooBig when trying to upload an item that's bigger
+// Make sure that Cache returns BlobTooBig when trying to upload an item that's bigger
 // than the maximum size.
 func TestCacheTooBig(t *testing.T) {
 	cacheDir := tempDir(t)
@@ -215,12 +215,15 @@ func TestCacheTooBig(t *testing.T) {
 
 	err := cache.Put("a-key", 10000, "", strings.NewReader(CONTENTS))
 	if err == nil {
-		t.Fatal("expected ErrTooBig")
+		t.Fatal("expected BlobTooBig")
 	}
-	switch err.(type) {
-	case *ErrTooBig:
-	default:
-		t.Fatal("expected ErrTooBig")
+
+	if cerr, ok := err.(*CacheError); ok {
+		if cerr.Code != BlobTooBig {
+			t.Fatal("expected error code BlobTooBig")
+		}
+	} else {
+		t.Fatal("expected error to be of type CacheError")
 	}
 }
 

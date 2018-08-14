@@ -121,7 +121,10 @@ func (c *diskCache) Put(key string, size int64, expectedSha256 string, r io.Read
 	ok := c.lru.Add(key, newItem)
 	c.mux.Unlock()
 	if !ok {
-		return &ErrTooBig{}
+		return &CacheError{
+			code: BlobTooBig,
+			msg:  "The item that has been tried to insert was too big.",
+		}
 	}
 
 	// By the time this function exits, we should either mark the LRU item as committed
